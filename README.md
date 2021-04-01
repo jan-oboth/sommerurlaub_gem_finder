@@ -21,11 +21,11 @@
 
 ## About the project
 
-hilft nur beim suchen, also spielt random videos und soll dann wenn man was eingibt automatisch die excel ausfüllen
+Hilft beim suchen indem es random videos spielt und wenn man ein highlight findet automatisch die excel ausfüllt
 
-immer wenn du enter drückst kriegst du ein random video aus dem ausgewählten sommerurlaub (oder allen) und wenn du "g" eigibst soll er die aktuelle zeit, den timestamp im video, deinen namen automatisch auslesen, dann gibst du einen kommentar zb "mathias passout" dazu ein und er speichert es in eine excel. dann guckst du weiter oder drückst wieder enter für das nächste video solange du bock hast und am ende kannst du den schneide boys einfach deine excel schicken
+Immer wenn man enter drückt kriegst du ein random video aus dem ausgewählten sommerurlaub (oder allen) und wenn du "g" eigibst soll er die aktuelle zeit, den timestamp im video, deinen namen automatisch auslesen, dann gibst du einen kommentar zb "mathias passout" dazu ein und er speichert es in eine excel. dann guckst du weiter oder drückst wieder enter für das nächste video solange du bock hast und am ende kannst du den schneide boys einfach deine excel schicken
 
-also nimmt einem halt die unnötige arbeit ab selber alles einzutragen und man kann watch zeit maximieren
+Also nimmt einem die unnötige arbeit ab selber alles einzutragen und man kann watch zeit maximieren
 
 ## Requirements
 
@@ -59,3 +59,15 @@ Jan Oboth - jd.oboth@gmail.com
 ## License
 
 TBD
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
+[contributors-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
+[forks-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/network/members
+[stars-shield]: https://img.shields.io/github/stars/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
+[stars-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
+[issues-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/issues
