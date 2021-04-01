@@ -19,13 +19,20 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.1", 'yellow'))
-  print(colored("- features: paths, csv support, search, randomized", 'yellow'))
-  # print(colored("\nTo be added: ", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.3", 'yellow'))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort", 'yellow'))
+  print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username
 
-  username = input(colored("\nEnter initials (will be printed to excel) > ", 'green'))
+  file_exists = os.path.isfile("sommerurlaub_gems.csv")
+  if not file_exists:
+    username = input(colored("\nEnter initials (will be printed to excel) > ", 'green'))
+  else:
+    with open('sommerurlaub_gems.csv', 'r', newline='') as csvfile:
+      name_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+      next(name_reader)
+      username = next(name_reader)[0]
   path, search = choose_path()
 
   while True:
@@ -54,7 +61,7 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last\nf: add to favorites\ng: add to gems\nd: delete file\np: change path\nh: print history\ns: search\nn: sort new/random\ni: info\nx: stop\nq: quit\n", 'yellow'))
+    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\np: change path\nh: print history\ns: search\nn: sort by date/random\ngo: gopro sort\ni: info\nx: stop\nq: quit\n", 'yellow'))
     choice = input(colored("> ", 'green'))
 
     if choice == "":
@@ -81,13 +88,6 @@ def main():
         os.system("tmux kill-server")
         last_counter = - 1
 
-    elif choice == "d":
-      os.system("tmux kill-server")
-      if delete():
-        result_list.remove(filepath)
-        j = j-1
-        deleted_counter = deleted_counter + 1
-
     elif choice == "p":
       path, search = choose_path()
       result_list = []
@@ -98,8 +98,8 @@ def main():
       print(*history, sep="\n")
       input(colored("\nPress any key to continue > ", 'green'))
 
-    elif choice == "f":
-      add_to_favorites()
+    elif choice == "skip":
+      j += 5
 
     elif choice == "g":
       add_to_gems()
@@ -115,8 +115,15 @@ def main():
         random.shuffle(result_list)
         sorting = "Random"
       else:
-        result_list.sort(key=os.path.getmtime, reverse=True)
+        result_list.sort(key=os.path.getmtime, reverse=False)
         sorting = "Sorted"
+      j = 0
+
+    elif choice == "go":
+      if len(result_list) == 0:
+        generate(path, search)
+      gopro_sort()
+      sorting = "gopro"
       j = 0
 
     elif choice == "i":
@@ -128,7 +135,7 @@ def main():
     elif choice == "q":
       os.system("tmux kill-server")
       print("")
-      print("# gems added: ", gems_counter)
+      print("# gems added: ", colored(gems_counter, 'green'))
       print("")
       print("History:")
       history = list(set(history))
@@ -243,6 +250,28 @@ def generate(path, search):
   return
 
 
+def gopro_sort():
+  # sorts gopro videos chronologically
+  global result_list
+  path_file_dict = {}
+  files = []
+  for path in result_list:
+    filename = path.split('/')[-1:]
+    # print(filename)
+    if filename[0][1] == "H":
+      filename = filename[0][2:8]
+      # print('filename[2:8] = ', filename)
+      files.append(filename)
+      path_file_dict[filename] = path
+  result_list = []
+  for i in range(1, 600):
+    for j in range(1, 7):
+      for name in files:
+        if int(name[-3:]) == i and int(name[1]) == j:
+          # print('added ', path_file_dict[name])
+          result_list.append(path_file_dict[name])
+
+
 def execute():
   # print(*result_list, sep="\n")
   global result_list, j, filepath
@@ -267,19 +296,6 @@ def execute():
   return
 
 
-def add_to_favorites():
-  global filepath
-
-  print(colored("\nFunction inactive:", 'green'), filepath)
-  choice = input(colored("\n> ", 'green'))
-
-  # if choice == "y":
-  #   f = open('favs.txt', 'a+')
-  #   f.write(filepath)
-  #   f.write('\n')
-  return
-
-
 def add_to_gems():
   global filepath, username, gems_counter
   # Columns: comment, situation, timestamp, current datetime, username, current video name
@@ -290,14 +306,15 @@ def add_to_gems():
   timestamp = input(colored("> ", 'green'))
 
   print(colored("\nWhat is the current situation?:", 'green'))
-  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random", 'green'))
+  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random\n7: Zuhause", 'green'))
   situations = {
       "1": "Draußen untwergs",
       "2": "Buffen",
       "3": "Zocken",
       "4": "Bauen",
       "5": "Jamaican Shower",
-      "6": "Random"
+      "6": "Random",
+      "7": "Zuhause"
   }
   situation = situations[input(colored("> ", 'green'))]
 
@@ -314,19 +331,6 @@ def add_to_gems():
   gems_counter = gems_counter + 1
 
   return
-
-
-def delete():
-  global filepath
-
-  print(colored("\nFunction inactive:", 'red'), filepath)
-  choice = input(colored("\n> ", 'red'))
-
-  # if choice == "yes":
-  #   command = "rm "+'"'+filepath+'"'
-  #   os.system(command)
-  #   return True
-  return False
 
 
 if __name__ == '__main__':
