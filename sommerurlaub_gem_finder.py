@@ -1,10 +1,12 @@
 import os
+import os.path
 import random
 import time
 import pyautogui
 from termcolor import colored
 from datetime import datetime
 import time
+import csv
 
 
 result_list = history = []
@@ -18,14 +20,13 @@ username = ""
 def main():
   os.system("clear")
   print(colored("Started Sommerurlaub Gem Finder v0.1", 'yellow'))
-  print(colored("- features: x", 'yellow'))
-  print(colored("\n to be added: csv support", 'yellow'))
+  print(colored("- features: paths, csv support, search, randomized", 'yellow'))
+  # print(colored("\nTo be added: ", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username
 
+  username = input(colored("\nEnter initials (will be printed to excel) > ", 'green'))
   path, search = choose_path()
-
-  username = input(colored("\n Enter initials (will be printed to excel) > ", 'yellow'))
 
   while True:
     os.system("clear")
@@ -42,6 +43,7 @@ def main():
         print("Current path:", path, "\n -", sorting, "file", j, "/", len(result_list))
       else:
         print("Current path:", path)
+    print("\nGems added this session:", colored(gems_counter, 'green'))
 
     if filepath != "":
       print("\nCurrent video:", colored(filepath[12:], 'magenta'))
@@ -232,7 +234,7 @@ def generate(path, search):
   else:
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage'):
       for name in files:
-        if name.endswith((".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
           if all(x in os.path.join(root, name).lower() for x in search.split()):
             filepath = os.path.join(root, name)
             result_list.append(filepath)
@@ -281,17 +283,35 @@ def add_to_favorites():
 def add_to_gems():
   global filepath, username, gems_counter
   # Columns: comment, situation, timestamp, current datetime, username, current video name
+  current_datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+  file_exists = os.path.isfile("sommerurlaub_gems.csv")
 
-  print(colored("\nWhat is the current situation?:", 'green'), filepath)
-  # Kategorien vorgeben?
-  situation = input(colored("\n> ", 'green'))
+  print(colored("\nTimestamp of gem start ('XX:XX'):", 'green'))
+  timestamp = input(colored("> ", 'green'))
 
-  print(colored("\nAdditional Comment:", 'green'), filepath)
-  comment = input(colored("\n> ", 'green'))
+  print(colored("\nWhat is the current situation?:", 'green'))
+  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random", 'green'))
+  situations = {
+      "1": "Draußen untwergs",
+      "2": "Buffen",
+      "3": "Zocken",
+      "4": "Bauen",
+      "5": "Jamaican Shower",
+      "6": "Random"
+  }
+  situation = situations[input(colored("> ", 'green'))]
+
+  print(colored("\nAdditional Comment:", 'green'))
+  comment = input(colored("> ", 'green'))
 
   # write to csv
+  with open('sommerurlaub_gems.csv', 'a', newline='') as csvfile:
+    gem_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    if not file_exists:
+      gem_writer.writerow(['Username', 'Datetime added', 'Relevant Filepath', 'timestamp', 'Situation', 'Comment'])
+    gem_writer.writerow([username, current_datetime, filepath.split('/')[-2:], timestamp, situation, comment])
+
   gems_counter = gems_counter + 1
-  print("gem added")
 
   return
 
