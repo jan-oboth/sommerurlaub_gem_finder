@@ -8,10 +8,11 @@ import time
 
 
 result_list = history = []
-j = show_info = deleted_counter = 0
+j = show_info = gems_counter = 0
 last_counter = -1
 sorting = "Random"
 filepath = ""
+username = ""
 
 
 def main():
@@ -20,12 +21,16 @@ def main():
   print(colored("- features: x", 'yellow'))
   print(colored("\n to be added: csv support", 'yellow'))
 
-  global filepath, history, result_list, j, last_counter, sorting, show_info, deleted_counter
+  global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username
 
   path, search = choose_path()
 
+  username = input(colored("\n Enter initials (will be printed to excel) > ", 'yellow'))
+
   while True:
     os.system("clear")
+
+    print("Username: ", username)
 
     if search != "":
       if len(result_list) != 0:
@@ -47,7 +52,7 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last\nf: add to favorites\nd: delete file\np: change path\nh: print history\ns: search\nn: sort new/random\ni: info\nx: stop\nq: quit\n", 'yellow'))
+    print(colored("\nenter: next\nl: last\nf: add to favorites\ng: add to gems\nd: delete file\np: change path\nh: print history\ns: search\nn: sort new/random\ni: info\nx: stop\nq: quit\n", 'yellow'))
     choice = input(colored("> ", 'green'))
 
     if choice == "":
@@ -94,6 +99,9 @@ def main():
     elif choice == "f":
       add_to_favorites()
 
+    elif choice == "g":
+      add_to_gems()
+
     elif choice == "s":
       search = input(colored("\nInput search string > ", 'green'))
       result_list = []
@@ -118,7 +126,7 @@ def main():
     elif choice == "q":
       os.system("tmux kill-server")
       print("")
-      print("# deleted: ", deleted_counter)
+      print("# gems added: ", gems_counter)
       print("")
       print("History:")
       history = list(set(history))
@@ -188,17 +196,17 @@ def generate(path, search):
   elif path == 'all':
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'):
       for name in files:
-        if name.endswith((".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'):
       for name in files:
-        if name.endswith((".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'):
       for name in files:
-        if name.endswith((".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'):
@@ -208,7 +216,7 @@ def generate(path, search):
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'):
       for name in files:
-        if name.endswith((".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     random.shuffle(result_list)
@@ -267,6 +275,24 @@ def add_to_favorites():
   #   f = open('favs.txt', 'a+')
   #   f.write(filepath)
   #   f.write('\n')
+  return
+
+
+def add_to_gems():
+  global filepath, username, gems_counter
+  # Columns: comment, situation, timestamp, current datetime, username, current video name
+
+  print(colored("\nWhat is the current situation?:", 'green'), filepath)
+  # Kategorien vorgeben?
+  situation = input(colored("\n> ", 'green'))
+
+  print(colored("\nAdditional Comment:", 'green'), filepath)
+  comment = input(colored("\n> ", 'green'))
+
+  # write to csv
+  gems_counter = gems_counter + 1
+  print("gem added")
+
   return
 
 
