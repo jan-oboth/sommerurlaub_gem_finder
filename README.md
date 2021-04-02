@@ -1,8 +1,3 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -62,12 +57,3 @@ TBD
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
-[contributors-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
-[forks-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/network/members
-[stars-shield]: https://img.shields.io/github/stars/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
-[stars-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Djamal-Sadaghiani/evergreeen.svg?style=for-the-badge
-[issues-url]: https://github.com/oboth3co/sommerurlaub_gem_finder/issues
