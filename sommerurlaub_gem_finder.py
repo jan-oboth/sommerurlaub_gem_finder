@@ -19,8 +19,8 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.3", 'yellow'))
-  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.4", 'yellow'))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash", 'yellow'))
   print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username
@@ -36,7 +36,7 @@ def main():
   path, search = choose_path()
 
   while True:
-    # os.system("clear")
+    os.system("clear")
 
     print("Username: ", username)
 
@@ -61,7 +61,7 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\np: change path\nh: print history\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort\ni: info\nx: stop\nq: quit\n", 'yellow'))
+    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\np: change path\nh: print history\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'yellow'))
     choice = input(colored("> ", 'green'))
 
     if choice == "":
@@ -133,6 +133,17 @@ def main():
       sorting = "gopro"
       j = 0
 
+    if choice == "m":
+      if move_to_trash():
+        result_list.remove(filepath)
+        j = j-1
+      if len(result_list) == 0:
+        generate(path, search)
+      os.system("tmux kill-server")
+      time.sleep(.5)
+      execute()
+      last_counter = -1
+
     elif choice == "i":
       show_info = 1 - show_info
 
@@ -152,7 +163,7 @@ def main():
 
 
 def choose_path():
-  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5\na: all\ncp: custom path\nf: favorites\ns: search\nq: quit\n", 'cyan'))
+  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5\na: all\nf: Frankfurt Footage\ncp: custom path\nf: favorites\ns: search\nq: quit\n", 'cyan'))
   choice = input(colored("> ", 'green'))
   search = ''
 
@@ -173,6 +184,9 @@ def choose_path():
 
   elif choice == "a":
     path = 'all'
+
+  elif choice == "f":
+    path = '/mnt/ntfs_F/Frankfurt_footage'
 
   elif choice == "cp":
     path = input("  Custom path: ")
@@ -212,27 +226,27 @@ def generate(path, search):
   elif path == 'all':
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     random.shuffle(result_list)
@@ -240,7 +254,7 @@ def generate(path, search):
   elif search == "":
     for root, dirs, files in os.walk(path):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
     random.shuffle(result_list)
@@ -248,7 +262,7 @@ def generate(path, search):
   else:
     for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage'):
       for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg")):
+        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           if all(x in os.path.join(root, name).lower() for x in search.split()):
             filepath = os.path.join(root, name)
             result_list.append(filepath)
@@ -311,14 +325,18 @@ def execute():
     j = j+1
     if filepath.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
       command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+      os.system(command)
+      time.sleep(.5)
+      pyautogui.keyDown('alt')
+      time.sleep(.2)
     else:
-      command = "tmux new -d 'feh --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
+      command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
       # command = "xdg-open " + filepath
-      print("command: ", command)
-    os.system(command)
-    time.sleep(.5)
-    pyautogui.keyDown('alt')
-    time.sleep(.2)
+      # print("command: ", command)
+      os.system(command)
+      time.sleep(.2)
+      pyautogui.keyDown('alt')
+      time.sleep(.2)
     pyautogui.press('tab')
     pyautogui.keyUp('alt')
     history.append(filepath)
@@ -364,6 +382,22 @@ def add_to_gems():
   gems_counter = gems_counter + 1
 
   return
+
+
+def move_to_trash():
+  global filepath
+
+  # print(colored("\nAre you sure:", 'red'), filepath)
+  # choice = input(colored("yes: yes\nn: no \n\n> ", 'red'))
+  command = "mv "+filepath+" /mnt/ntfs_F/_trash"
+  os.system(command)
+  return True
+
+  # if choice == "yes":
+  #   command = "rm "+'"'+filepath+'"'
+  #   os.system(command)
+  #   return True
+  # return False
 
 
 if __name__ == '__main__':
