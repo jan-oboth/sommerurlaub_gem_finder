@@ -1,3 +1,2 @@
-Username,Datetime added,Relevant Filepath,timestamp,Situation,Comment
-JO,01-04-2021 20:22:53,"['06.08', 'GH010018.MP4']",alles,Random,Hinfahrt im Zeitraffer zeigen
-JO,01-04-2021 20:29:24,"['06.08', 'GH010019.MP4']",03:10,Random,fabi revealt sein wahres ich
+Username,path,Datetime added,Relevant Filepath,timestamp,Situation,Comment
+JO,/mnt/ntfs_F/Frankfurt_footage,08-04-2021 17:38:27,"['Frankfurt_footage', '20181208_222759.mp4']",10,Random,test

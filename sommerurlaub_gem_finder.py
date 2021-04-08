@@ -13,7 +13,7 @@ result_list = history = []
 j = show_info = gems_counter = 0
 last_counter = -1
 sorting = "Random"
-filepath = ""
+filepath = path = ""
 username = ""
 
 
@@ -23,7 +23,7 @@ def main():
   print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash", 'yellow'))
   print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
-  global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username
+  global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
 
   file_exists = os.path.isfile("sommerurlaub_gems.csv")
   if not file_exists:
@@ -75,18 +75,21 @@ def main():
     elif choice == "l":
       try:
         os.system("tmux kill-server")
-        filepath = history[last_counter]
-        last_counter = last_counter - 1
-        command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
-        os.system(command)
         time.sleep(.5)
-        pyautogui.keyDown('alt')
-        time.sleep(.2)
-        pyautogui.press('tab')
-        pyautogui.keyUp('alt')
+        j = j-2
+        execute()
+        # filepath = history[last_counter]
+        # last_counter = last_counter - 1
+        # command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+        # os.system(command)
+        # time.sleep(.5)
+        # pyautogui.keyDown('alt')
+        # time.sleep(.2)
+        # pyautogui.press('tab')
+        # pyautogui.keyUp('alt')
       except:
         os.system("tmux kill-server")
-        last_counter = - 1
+        # last_counter = - 1
 
     elif choice == "p":
       path, search = choose_path()
@@ -111,6 +114,8 @@ def main():
       path = 'search'
 
     elif choice == "n":
+      if len(result_list) == 0:
+        generate(path, search)
       if sorting == "Sorted":
         random.shuffle(result_list)
         sorting = "Random"
@@ -330,7 +335,8 @@ def execute():
       pyautogui.keyDown('alt')
       time.sleep(.2)
     else:
-      command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
+      # command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
+      command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
       # command = "xdg-open " + filepath
       # print("command: ", command)
       os.system(command)
@@ -348,7 +354,7 @@ def execute():
 
 
 def add_to_gems():
-  global filepath, username, gems_counter
+  global filepath, username, gems_counter, path
   # Columns: comment, situation, timestamp, current datetime, username, current video name
   current_datetime = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
   file_exists = os.path.isfile("sommerurlaub_gems.csv")
@@ -357,15 +363,16 @@ def add_to_gems():
   timestamp = input(colored("> ", 'green'))
 
   print(colored("\nWhat is the current situation?:", 'green'))
-  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random\n7: Zuhause", 'green'))
+  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random\n7: Zuhause\n8: Feiern", 'green'))
   situations = {
-      "1": "Draußen untwergs",
+      "1": "Draußen unterwegs",
       "2": "Buffen",
       "3": "Zocken",
       "4": "Bauen",
       "5": "Jamaican Shower",
       "6": "Random",
-      "7": "Zuhause"
+      "7": "Zuhause",
+      "8": "Feiern",
   }
   situation = situations[input(colored("> ", 'green'))]
 
@@ -376,8 +383,8 @@ def add_to_gems():
   with open('sommerurlaub_gems.csv', 'a', newline='') as csvfile:
     gem_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     if not file_exists:
-      gem_writer.writerow(['Username', 'Datetime added', 'Relevant Filepath', 'timestamp', 'Situation', 'Comment'])
-    gem_writer.writerow([username, current_datetime, filepath.split('/')[-2:], timestamp, situation, comment])
+      gem_writer.writerow(['Username', 'path', 'Datetime added', 'Relevant Filepath', 'timestamp', 'Situation', 'Comment'])
+    gem_writer.writerow([username, path, current_datetime, filepath.split('/')[-2:], timestamp, situation, comment])
 
   gems_counter = gems_counter + 1
 
