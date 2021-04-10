@@ -19,8 +19,8 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.4", 'yellow'))
-  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.5", 'yellow'))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index", 'yellow'))
   print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
@@ -61,7 +61,7 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\np: change path\nh: print history\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'yellow'))
+    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\ngoto: goto specific index\np: change path\nh: print history\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'yellow'))
     choice = input(colored("> ", 'green'))
 
     if choice == "":
@@ -104,6 +104,9 @@ def main():
     elif choice == "skip":
       j += 5
 
+    elif choice == "goto":
+      j = int(input(colored("\nInput index > ")))
+
     elif choice == "g":
       add_to_gems()
 
@@ -135,7 +138,7 @@ def main():
       if len(result_list) == 0:
         generate(path, search)
       phone_sort()
-      sorting = "gopro"
+      sorting = "phone"
       j = 0
 
     if choice == "m":
@@ -363,7 +366,7 @@ def add_to_gems():
   timestamp = input(colored("> ", 'green'))
 
   print(colored("\nWhat is the current situation?:", 'green'))
-  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random\n7: Zuhause\n8: Feiern", 'green'))
+  print(colored("1: Draußen unterwegs\n2: Buffen\n3: Zocken\n4: Bauen\n5: Jamaican Shower\n6: Random\n7: Zuhause\n8: Feiern\n9: Labern", 'green'))
   situations = {
       "1": "Draußen unterwegs",
       "2": "Buffen",
@@ -373,6 +376,7 @@ def add_to_gems():
       "6": "Random",
       "7": "Zuhause",
       "8": "Feiern",
+      "9": "Labern"
   }
   situation = situations[input(colored("> ", 'green'))]
 
