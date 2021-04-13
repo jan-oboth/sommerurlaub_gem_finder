@@ -20,7 +20,7 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.6 ", 'yellow', 'on_grey', ['bold']))
+  print(colored("Started Sommerurlaub Gem Finder v0.6 ", 'grey', 'on_yellow', ['bold']))
   print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing", 'yellow'))
   # print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
@@ -68,7 +68,7 @@ def main():
     print("\nGems added this session:", colored(gems_counter, 'green'))
 
     if filepath != "":
-      print("\nCurrent video:", colored(filepath[12:], 'magenta'))
+      print("\nCurrent video:", colored(filepath[12:], 'white', 'on_blue'))
 
     if show_info == 1:
       print("\nNext 5:")
@@ -76,10 +76,12 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last\ng: add to gems\nskip: skip 5 videos\ngoto: goto specific index\np: change path\nh: print history\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'yellow'))
+    print(colored("\nenter: next\nl: last", 'cyan'), colored("\ng: add to gems", 'green'), colored(
+        "\nskip: skip 5 videos\ngoto: goto specific index\np: change path\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort", 'yellow'),
+        colored("\nh: print history\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'white'))
     choice = input(colored("> ", 'green'))
 
-    if choice == "":
+    if choice == "" or choice == "enter":
       if len(result_list) == 0:
         generate(path, search)
       os.system("tmux kill-server")
@@ -186,7 +188,8 @@ def main():
 
 
 def choose_path():
-  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5\na: all\nf: Frankfurt Footage\ncp: custom path\nwg: watch gems\ns: search\nq: quit\n", 'cyan'))
+  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5",
+                'cyan'), colored("\na: all\nf: Frankfurt Footage\ncp: custom path\nwg: watch gems\ns: search\nq: quit\n", 'magenta'))
   choice = input(colored("> ", 'green'))
   search = ''
 
