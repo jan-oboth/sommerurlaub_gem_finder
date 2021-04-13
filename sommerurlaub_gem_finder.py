@@ -20,8 +20,8 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.6 ", 'grey', 'on_yellow', ['bold']))
-  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.7 ", 'grey', 'on_yellow', ['bold']))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing, play/pause command", 'yellow'))
   # print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
@@ -76,8 +76,8 @@ def main():
         print(colored(datetime.fromtimestamp(os.path.getmtime(result_list[i])).strftime(
             '%Y-%m-%d %H:%M:%S'), 'cyan'), result_list[i][12:])
 
-    print(colored("\nenter: next\nl: last", 'cyan'), colored("\ng: add to gems", 'green'), colored(
-        "\nskip: skip 5 videos\ngoto: goto specific index\np: change path\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort", 'yellow'),
+    print(colored("\nenter: next\nl: previous\np: play/pause", 'cyan'), colored("\ng: add to gems", 'green'), colored(
+        "\nskip: skip 5 videos\ngoto: goto specific index\ncp: change path\ns: search\nn: sort by date/random\ngopro: gopro sort\nphone: phone sort", 'yellow'),
         colored("\nh: print history\nm: move to trash and show next\ni: info\nx: stop\nq: quit\n", 'white'))
     choice = input(colored("> ", 'green'))
 
@@ -109,6 +109,10 @@ def main():
         # last_counter = - 1
 
     elif choice == "p":
+      command = "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+      os.system(command)
+
+    elif choice == "cp":
       path, search = choose_path()
       result_list = []
       sorting = "(random):"
@@ -264,27 +268,27 @@ def generate(path, search):
     random.shuffle(result_list)
 
   elif path == 'all':
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
           result_list.append(filepath)
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
@@ -292,7 +296,7 @@ def generate(path, search):
     random.shuffle(result_list)
 
   elif search == "":
-    for root, dirs, files in os.walk(path):
+    for root, _dirs, files in os.walk(path):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
@@ -300,7 +304,7 @@ def generate(path, search):
     random.shuffle(result_list)
 
   else:
-    for root, dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage'):
+    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage'):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           if all(x in os.path.join(root, name).lower() for x in search.split()):
