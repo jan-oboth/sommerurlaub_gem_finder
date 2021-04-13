@@ -5,6 +5,7 @@ import time
 import pyautogui
 from termcolor import colored
 from datetime import datetime
+from datetime import timedelta
 import time
 import csv
 
@@ -19,9 +20,9 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.6", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.6 ", 'yellow', 'on_grey', ['bold']))
   print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing", 'yellow'))
-  print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
+  # print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
 
@@ -36,7 +37,7 @@ def main():
   path, search = choose_path()
 
   while True:
-    # os.system("clear")
+    os.system("clear")
 
     print("Username: ", username)
 
@@ -45,6 +46,20 @@ def main():
         print("Current search string:", colored(search, 'green'), "\n -", sorting, "match", j, "/", len(result_list))
       else:
         print("Current search string:", colored(search, 'green'))
+    elif path == "gems":
+      if len(result_list) != 0:
+        if isinstance(result_list[j-1][1], int):
+          current_gem_timestamp = str(timedelta(seconds=(result_list[j-1][1])))
+        else:
+          current_gem_timestamp = str(result_list[j-1][1])
+
+        text = "- " + sorting + " gem: " + \
+            str(j) + " / " + str(len(result_list)) + "\n - Timestamp: " + \
+            current_gem_timestamp + "\n - Situation: " + \
+            str(result_list[j-1][2]) + "\n - Description: " + str(result_list[j-1][3])
+        print(colored("\n*WATCHING GEMS*\n", on_color='on_green'), colored(text, 'green'))
+      else:
+        print("Current path:", path)
     else:
       if len(result_list) != 0:
         print("Current path:", path, "\n -", sorting, "file", j, "/", len(result_list))
@@ -233,15 +248,16 @@ def generate(path, search):
         z = x[-1:][0]
         timestamp = row[4].split(':')
         # print(result_list[j], " ", row[3], " ", timestamp)
-        print(row[1]+'/'+y+'/'+z)
+        # print(row[1]+'/'+y+'/'+z)
         try:
-          print(timestamp)
+          # print(timestamp)
           timestamp = int(timestamp[0])*60+int(timestamp[1])
         except:
-          timestamp = "alles"
-        print("timestamp for ", row[3], " is ", timestamp)
-        gem_tuple = (row[1]+'/'+y+'/'+z, timestamp)
-        result_list.append(gem_tuple)
+          print("timestamp was not int")
+        finally:
+          # print("timestamp for ", row[3], " is ", timestamp)
+          gem_tuple = (row[1]+'/'+y+'/'+z, timestamp, row[5], row[6])
+          result_list.append(gem_tuple)
     random.shuffle(result_list)
 
   elif path == 'all':
@@ -343,23 +359,11 @@ def execute():
     try:
       if j == len(result_list):
         j = 0
-      filepath, timestamp = result_list[j]
-      print("executing: ", filepath, "at time", timestamp)
-      print("type: ", type(timestamp))
+      filepath = result_list[j][0]
+      timestamp = result_list[j][1]
+      # print("executing: ", filepath, "at time", timestamp)
+      # print("type: ", type(timestamp))
       j = j+1
-      # tmux new -d 'vlc --start-time=83 --stop-time=100 /mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1/GoProOhne/07.08/GH020028.MP4'
-      # with open('sommerurlaub_gems.csv', newline='') as csvfile:
-      #   gem_reader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-      #   for row in gem_reader:
-      #     x = row[3].strip("[], '")
-      #     x = x.split("', '")
-      #     y = x[0]
-      #     z = x[-1:][0]
-      #     if result_list[j] == row[1]+'/'+y+'/'+z:
-      #       timestamp = row[4].split(':')
-      #       print(result_list[j], " ", row[3], " ", timestamp)
-      #       timestamp = int(timestamp[0])*60+int(timestamp[1])
-      #       print("timestamp for ", filepath, " is ", timestamp, "in minutes:", timestamp/60)
 
       if filepath.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
         if isinstance(timestamp, int):
