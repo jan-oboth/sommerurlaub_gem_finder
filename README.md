@@ -22,6 +22,9 @@ Immer wenn man enter drückt kriegst du ein random video aus dem ausgewählten s
 
 Also nimmt einem die unnötige arbeit ab selber alles einzutragen und man kann watch zeit maximieren
 
+![Screenshot](Screenshot1.png)
+![Screenshot](Screenshot2.png)
+
 ## Requirements
 
 - Python3
