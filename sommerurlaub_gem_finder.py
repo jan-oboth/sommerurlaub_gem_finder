@@ -19,8 +19,8 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.5", 'yellow'))
-  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.6", 'yellow'))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing", 'yellow'))
   print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
 
   global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
@@ -36,7 +36,7 @@ def main():
   path, search = choose_path()
 
   while True:
-    os.system("clear")
+    # os.system("clear")
 
     print("Username: ", username)
 
@@ -171,7 +171,7 @@ def main():
 
 
 def choose_path():
-  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5\na: all\nf: Frankfurt Footage\ncp: custom path\nf: favorites\ns: search\nq: quit\n", 'cyan'))
+  print(colored("\n1: Sommerurlaub 1\n2: Sommerurlaub 2.0\n3: Sommerurlaub Reunion\n4: Sommerurlaub 1.1\n5: Sommerurlaub 5\na: all\nf: Frankfurt Footage\ncp: custom path\nwg: watch gems\ns: search\nq: quit\n", 'cyan'))
   choice = input(colored("> ", 'green'))
   search = ''
 
@@ -199,8 +199,8 @@ def choose_path():
   elif choice == "cp":
     path = input("  Custom path: ")
 
-  elif choice == "f":
-    path = 'favs'
+  elif choice == "wg":
+    path = 'gems'
 
   elif choice == "s":
     search = input(colored("\nInput search string > ", 'green'))
@@ -223,12 +223,25 @@ def generate(path, search):
   j = 0
   random.seed()
 
-  if path == 'favs':
-    file = open('favs.txt', 'r')
-    result_list = file.readlines()
-    for x in range(len(result_list)):
-      result_list[x] = result_list[x][:-1]
-    file.close()
+  if path == 'gems':
+    with open('sommerurlaub_gems.csv', newline='') as csvfile:
+      gem_reader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+      for row in gem_reader:
+        x = row[3].strip("[], '")
+        x = x.split("', '")
+        y = x[0]
+        z = x[-1:][0]
+        timestamp = row[4].split(':')
+        # print(result_list[j], " ", row[3], " ", timestamp)
+        print(row[1]+'/'+y+'/'+z)
+        try:
+          print(timestamp)
+          timestamp = int(timestamp[0])*60+int(timestamp[1])
+        except:
+          timestamp = "alles"
+        print("timestamp for ", row[3], " is ", timestamp)
+        gem_tuple = (row[1]+'/'+y+'/'+z, timestamp)
+        result_list.append(gem_tuple)
     random.shuffle(result_list)
 
   elif path == 'all':
@@ -324,35 +337,86 @@ def phone_sort():
 
 def execute():
   # print(*result_list, sep="\n")
-  global result_list, j, filepath
+  global result_list, j, filepath, path
 
-  try:
-    if j == len(result_list):
+  if path == 'gems':
+    try:
+      if j == len(result_list):
+        j = 0
+      filepath, timestamp = result_list[j]
+      print("executing: ", filepath, "at time", timestamp)
+      print("type: ", type(timestamp))
+      j = j+1
+      # tmux new -d 'vlc --start-time=83 --stop-time=100 /mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1/GoProOhne/07.08/GH020028.MP4'
+      # with open('sommerurlaub_gems.csv', newline='') as csvfile:
+      #   gem_reader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+      #   for row in gem_reader:
+      #     x = row[3].strip("[], '")
+      #     x = x.split("', '")
+      #     y = x[0]
+      #     z = x[-1:][0]
+      #     if result_list[j] == row[1]+'/'+y+'/'+z:
+      #       timestamp = row[4].split(':')
+      #       print(result_list[j], " ", row[3], " ", timestamp)
+      #       timestamp = int(timestamp[0])*60+int(timestamp[1])
+      #       print("timestamp for ", filepath, " is ", timestamp, "in minutes:", timestamp/60)
+
+      if filepath.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        if isinstance(timestamp, int):
+          command = "tmux new -d 'vlc --start-time="+str(timestamp)+' "'+filepath+'"'+" --fullscreen'"
+        else:
+          command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+        os.system(command)
+        time.sleep(.5)
+        pyautogui.keyDown('alt')
+        time.sleep(.2)
+      else:
+        # command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
+        command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+        # command = "xdg-open " + filepath
+        # print("command: ", command)
+        os.system(command)
+        time.sleep(.2)
+        pyautogui.keyDown('alt')
+        time.sleep(.2)
+      pyautogui.press('tab')
+      pyautogui.keyUp('alt')
+      history.append(filepath)
+      return
+    except:
+      filepath = "Error - No file found"
       j = 0
-    filepath = result_list[j]
-    j = j+1
-    if filepath.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
-      command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
-      os.system(command)
-      time.sleep(.5)
-      pyautogui.keyDown('alt')
-      time.sleep(.2)
-    else:
-      # command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
-      command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
-      # command = "xdg-open " + filepath
-      # print("command: ", command)
-      os.system(command)
-      time.sleep(.2)
-      pyautogui.keyDown('alt')
-      time.sleep(.2)
-    pyautogui.press('tab')
-    pyautogui.keyUp('alt')
-    history.append(filepath)
-    return
-  except:
-    filepath = "Error - No file found"
-    j = 0
+
+  else:
+    try:
+      if j == len(result_list):
+        j = 0
+      filepath = result_list[j]
+      j = j+1
+
+      if filepath.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov")):
+        command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+        os.system(command)
+        time.sleep(.5)
+        pyautogui.keyDown('alt')
+        time.sleep(.2)
+      else:
+        # command = "tmux new -d 'feh --scale-down --auto-zoom --geometry 2560x1440+2560+0 " + filepath+"'"
+        command = "tmux new -d 'vlc "+'"'+filepath+'"'+" --fullscreen'"
+        # command = "xdg-open " + filepath
+        # print("command: ", command)
+        os.system(command)
+        time.sleep(.2)
+        pyautogui.keyDown('alt')
+        time.sleep(.2)
+      pyautogui.press('tab')
+      pyautogui.keyUp('alt')
+      history.append(filepath)
+      return
+    except:
+      filepath = "Error - No file found"
+      j = 0
+
   return
 
 
@@ -388,7 +452,11 @@ def add_to_gems():
     gem_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     if not file_exists:
       gem_writer.writerow(['Username', 'path', 'Datetime added', 'Relevant Filepath', 'timestamp', 'Situation', 'Comment'])
-    gem_writer.writerow([username, path, current_datetime, filepath.split('/')[-2:], timestamp, situation, comment])
+    # gem_writer.writerow([username, path, current_datetime, filepath.split('/')[-2:], timestamp, situation, comment])
+    printed_path = filepath.split('/')[0:-2]
+    seperator = '/'
+    gem_writer.writerow([username, seperator.join(printed_path), current_datetime,
+                         filepath.split('/')[-2:], timestamp, situation, comment])
 
   gems_counter = gems_counter + 1
 
