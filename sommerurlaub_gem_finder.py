@@ -339,19 +339,21 @@ def gopro_sort():
 
 def phone_sort():
   global result_list
+
   path_file_dict = {}
   files = []
   for path in result_list:
     filename = path.split('/')[-1:]
-    # print("filepath before if:", filename)
-    if filename[0][0] == "I" or filename[0][0] == "V":
-      filename = filename[0][4:12]+"99"+filename[0][15:19]
-      # print("filename whatsapp:", filename)
-    else:
-      filename = filename[0][0:8]+filename[0][9:15]
-      # print("filename:", filename)
-    path_file_dict[filename] = path
-    files.append(int(filename))
+    if filename[0][0] != "G":
+      # print("filepath before if:", filename)
+      if filename[0][0] == "I" or filename[0][0] == "V":
+        filename = filename[0][4:12]+"99"+filename[0][15:19]
+        # print("filename whatsapp:", filename)
+      else:
+        filename = filename[0][0:8]+filename[0][9:15]
+        # print("filename:", filename)
+      path_file_dict[filename] = path
+      files.append(int(filename))
   files.sort()
   result_list = []
   for file in files:
