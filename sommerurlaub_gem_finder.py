@@ -10,7 +10,7 @@ import time
 import csv
 
 
-result_list = history = []
+result_list = history = paths = []
 j = show_info = gems_counter = 0
 last_counter = -1
 sorting = "Random"
@@ -20,11 +20,22 @@ username = ""
 
 def main():
   os.system("clear")
-  print(colored("Started Sommerurlaub Gem Finder v0.7 ", 'grey', 'on_yellow', ['bold']))
-  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing, play/pause command", 'yellow'))
-  # print(colored("\nTo be added: reading timestamp automatically", 'yellow'))
+  print(colored("Started Sommerurlaub Gem Finder v0.8 ", 'grey', 'on_yellow', ['bold']))
+  print(colored("- features: paths, csv support, search, randomized, gopro sort, picture support, phone sort, move to trash, goto index, automatic gem playing, play/pause command, dynamic paths", 'yellow'))
 
-  global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path
+  global filepath, history, result_list, j, last_counter, sorting, show_info, gems_counter, username, path, paths
+
+  try:
+    file = open('paths.txt', 'r')
+    paths = file.readlines()
+    for x in range(len(paths)):
+      paths[x] = paths[x][:-1]
+    file.close
+    print("\nFound the following paths:")
+    print(*paths, sep="\n")
+  except:
+    print(colored("ERROR: 'paths.txt' not found or other malfunction. Create paths.txt and fill in paths then try again", 'red'))
+    return 0
 
   file_exists = os.path.isfile("sommerurlaub_gems.csv")
   if not file_exists:
@@ -198,25 +209,32 @@ def choose_path():
   search = ''
 
   if choice == "1":
-    path = '/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'
+    # path = '/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'
+    path = paths[0]
 
   elif choice == "2":
-    path = '/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'
+    # path = '/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'
+    path = paths[1]
 
   elif choice == "3":
-    path = '/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'
+    # path = '/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'
+    path = paths[2]
 
   elif choice == "4":
-    path = '/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'
+    # path = '/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'
+    path = paths[3]
+    print(path)
 
   elif choice == "5":
-    path = '/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'
+    # path = '/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'
+    path = paths[4]
 
   elif choice == "a":
     path = 'all'
 
   elif choice == "f":
-    path = '/mnt/ntfs_F/Frankfurt_footage'
+    # path = '/mnt/ntfs_F/Frankfurt_footage'
+    path = paths[5]
 
   elif choice == "cp":
     path = input("  Custom path: ")
@@ -233,13 +251,14 @@ def choose_path():
     exit()
 
   else:
-    path = '/mnt/ntfs_F/--'
+    # path = '/mnt/ntfs_F/'
+    path = paths[6]
 
   return path, search
 
 
 def generate(path, search):
-  global result_list, j
+  global result_list, j, paths
 
   result_list = []
   j = 0
@@ -268,27 +287,7 @@ def generate(path, search):
     random.shuffle(result_list)
 
   elif path == 'all':
-    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1'):
-      for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
-          filepath = os.path.join(root, name)
-          result_list.append(filepath)
-    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0'):
-      for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
-          filepath = os.path.join(root, name)
-          result_list.append(filepath)
-    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion'):
-      for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
-          filepath = os.path.join(root, name)
-          result_list.append(filepath)
-    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1'):
-      for name in files:
-        if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
-          filepath = os.path.join(root, name)
-          result_list.append(filepath)
-    for root, _dirs, files in os.walk('/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5'):
+    for root, _dirs, files in os.walk(paths[6]):
       for name in files:
         if name.endswith((".MP4", ".mp4", ".mkv", ".wmv", ".flv", ".webm", ".mov", ".JPG", ".jpg", "jpeg")):
           filepath = os.path.join(root, name)
@@ -481,7 +480,8 @@ def move_to_trash():
 
   # print(colored("\nAre you sure:", 'red'), filepath)
   # choice = input(colored("yes: yes\nn: no \n\n> ", 'red'))
-  command = "mv "+filepath+" /mnt/ntfs_F/_trash"
+  # command = "mv "+filepath+" /mnt/ntfs_F/_trash"
+  command = "mv "+filepath+" "+paths[7]
   os.system(command)
   return True
 

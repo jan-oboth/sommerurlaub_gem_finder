@@ -38,6 +38,15 @@ Also nimmt einem die unnötige arbeit ab selber alles einzutragen und man kann w
    git clone https://github.com/oboth3co/sommerurlaub_gem_finder.git
    ```
 2. Install requirements
+3. Fill "paths.txt" with your paths according to the order:
+   a. Sommerurlaub 1
+   b. Sommerurlaub 2.0
+   c. Sommerurlaub reunion
+   d. Sommerurlaub 1.1
+   e. Sommerurlaub 5
+   f. Frankfurt footage
+   g. Sommerurlaub (überordner)
+   h. trash folder
 
 <!-- CONTRIBUTING -->
 

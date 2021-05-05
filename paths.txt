@@ -1,0 +1,8 @@
+/mnt/ntfs_F/Sommerurlaub_footage/1_Sommerurlaub_1
+/mnt/ntfs_F/Sommerurlaub_footage/2_Sommerurlaub_2.0
+/mnt/ntfs_F/Sommerurlaub_footage/3_Sommerurlaub_reunion
+/mnt/ntfs_F/Sommerurlaub_footage/4_Sommerurlaub_1.1
+/mnt/ntfs_F/Sommerurlaub_footage/5_Sommerurlaub_5
+/mnt/ntfs_F/Frankfurt_footage
+/mnt/ntfs_F/Sommerurlaub_footage
+/mnt/ntfs_F/_trash
